@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marko Kujacic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f7;--bg2:#eceef3;--surface:#ffffff;--surface2:#f0f2f7;
+  --border:rgba(0,0,0,0.07);--text:#1a1c22;--muted:#6b7280;
+  --accent:#3b9eff;--accent2:#7ec3ff;--accent-dark:#1a78d4;
+  --dot:rgba(148,156,168,.42);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--bg);
+  background-image:radial-gradient(circle, var(--dot) 1px, transparent 1.15px);
+  background-size:22px 22px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;cursor:none;
+}
+
+/* CURSOR */
+#cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none}
+#cur-h{position:absolute;transform:translate(-50%,-50%)}
+#cur-h::before,#cur-h::after{content:'';position:absolute;background:var(--accent);border-radius:1px}
+#cur-h::before{width:2px;height:18px;left:50%;top:50%;transform:translate(-50%,-50%)}
+#cur-h::after{width:18px;height:2px;left:50%;top:50%;transform:translate(-50%,-50%)}
+#cur-r{width:40px;height:40px;border:1.5px solid var(--accent);border-radius:50%;position:absolute;transform:translate(-50%,-50%);opacity:.55;transition:width .3s,height .3s,opacity .3s,border-color .3s}
+body.hov #cur-r{width:60px;height:60px;opacity:.9;border-color:var(--accent-dark)}
+body.hov #cur-h::before,body.hov #cur-h::after{background:var(--accent-dark)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 64px;transition:background .4s,padding .3s,box-shadow .3s}
+nav.sc{background:rgba(244,245,247,.88);backdrop-filter:blur(20px);padding:14px 64px;box-shadow:0 1px 0 var(--border)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none;letter-spacing:-0.03em}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:34px;list-style:none;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;transition:color .2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1.5px;background:var(--accent);transition:width .3s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:var(--accent)!important;color:#fff!important;padding:10px 24px;border-radius:6px;font-weight:600!important;transition:background .2s,transform .2s!important}
+.nav-cta:hover{background:var(--accent-dark)!important;transform:translateY(-1px)}
+.nav-cta::after{display:none!important}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 64px 84px;position:relative;overflow:hidden;background:linear-gradient(155deg,#ffffff 0%,#e6effc 45%,#d9eaff 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(59,158,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,158,255,.04) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 60% 40%,black 20%,transparent 72%)}
+.hero-glow{position:absolute;top:-15%;right:-8%;width:750px;height:750px;background:radial-gradient(circle,rgba(59,158,255,.12) 0%,transparent 65%);pointer-events:none}
+.hero-label{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:24px;display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+.hero-label::before{content:'';display:block;width:28px;height:1.5px;background:var(--accent)}
+h1.hero-title{font-family:'Syne',sans-serif;font-size:clamp(3.4rem,9vw,8.5rem);font-weight:800;line-height:.93;letter-spacing:-0.045em;color:var(--text);position:relative;z-index:2;margin-bottom:30px}
+h1.hero-title em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:490px;position:relative;z-index:2;margin-bottom:42px;line-height:1.8}
+.hero-actions{display:flex;gap:14px;align-items:center;position:relative;z-index:2}
+.btn-p{background:var(--accent);color:#fff;padding:14px 34px;border-radius:6px;text-decoration:none;font-weight:600;font-size:.94rem;transition:background .2s,transform .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-p:hover{background:var(--accent-dark);transform:translateY(-2px)}
+.btn-o{border:1.5px solid rgba(0,0,0,.12);color:var(--text);padding:14px 34px;border-radius:6px;text-decoration:none;font-weight:500;font-size:.94rem;transition:border-color .2s,color .2s}
+.btn-o:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{position:absolute;right:64px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:36px;z-index:2}
+.stat{text-align:right}
+.stat-num{font-family:'Syne',sans-serif;font-weight:800;font-size:2.3rem;color:var(--text);line-height:1;letter-spacing:-0.04em}
+.stat-num span{color:var(--accent)}
+.stat-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+.hero-scroll-wrap{position:absolute;right:64px;bottom:84px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;color:var(--muted);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
+.scroll-line{width:1px;height:52px;background:linear-gradient(to bottom,var(--accent),transparent);animation:pl 2s ease-in-out infinite}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* TICKER */
+.ticker-wrap{background:var(--accent);overflow:hidden;padding:12px 0;position:relative;z-index:2}
+.ticker{display:flex;white-space:nowrap;animation:tk 28s linear infinite}
+.tk-item{display:flex;align-items:center;gap:18px;padding:0 18px;font-size:.76rem;color:rgba(255,255,255,.82);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.tk-dot{width:4px;height:4px;background:rgba(255,255,255,.55);border-radius:50%;flex-shrink:0}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* LAYOUT BASE */
+section{position:relative;z-index:1}
+.wrap{max-width:1220px;margin:0 auto;padding:0 64px}
+.sp{padding:120px 0}
+.sec-label{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;font-weight:600}
+.sec-label::before{content:'';display:block;width:20px;height:1.5px;background:var(--accent)}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(2.1rem,5vw,3.7rem);font-weight:800;line-height:1.05;letter-spacing:-0.035em;color:var(--text);margin-bottom:16px}
+.sec-sub{color:var(--muted);max-width:520px;font-size:.97rem;line-height:1.8}
+
+/* SERVICES */
+#services{background:transparent}
+.svc-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
+.svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
+.svc-card{background:var(--bg);padding:48px 42px;position:relative;overflow:hidden;transition:background .3s,box-shadow .3s;border:1px solid var(--border)}
+.svc-card::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:0;background:var(--accent);transition:width .4s}
+.svc-card:hover{background:var(--surface);box-shadow:0 8px 40px rgba(59,158,255,.09)}
+.svc-card:hover::after{width:100%}
+.svc-n{font-size:.68rem;color:var(--accent);letter-spacing:.18em;margin-bottom:22px;font-weight:600}
+.svc-icon{width:44px;height:44px;margin-bottom:18px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:border-color .3s}
+.svc-card:hover .svc-icon{border-color:var(--accent)}
+.svc-name{font-family:'Syne',sans-serif;font-size:1.18rem;font-weight:700;color:var(--text);margin-bottom:10px}
+.svc-desc{color:var(--muted);font-size:.88rem;line-height:1.75}
+.svc-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
+.tag{font-size:.68rem;padding:5px 12px;border:1px solid var(--border);border-radius:20px;color:var(--muted);transition:border-color .2s,color .2s}
+.svc-card:hover .tag{border-color:rgba(59,158,255,.35);color:var(--accent)}
+
+/* ABOUT */
+#about{background:transparent}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center}
+.about-vis{position:relative;aspect-ratio:3/4;max-height:500px}
+.about-card{width:100%;height:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.07)}
+.about-bg-txt{font-family:'Syne',sans-serif;font-size:8rem;font-weight:800;color:rgba(59,158,255,.05);letter-spacing:-0.06em;user-select:none}
+.about-init{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.about-init-txt{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--text);letter-spacing:-0.04em;line-height:1}
+.about-pill{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);border:1.5px solid rgba(59,158,255,.25);padding:6px 16px;border-radius:20px;background:rgba(59,158,255,.05)}
+.about-badge{position:absolute;bottom:-16px;right:-16px;width:108px;height:108px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;box-shadow:0 12px 28px rgba(59,158,255,.28)}
+.about-badge-n{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;line-height:1}
+.about-badge-l{font-size:.58rem;color:rgba(255,255,255,.78);text-transform:uppercase;letter-spacing:.08em;text-align:center}
+.about-txt p{color:var(--muted);margin-bottom:18px;line-height:1.85;font-size:.96rem}
+.about-skills{margin-top:34px}
+.sk-row{display:flex;align-items:center;gap:14px;margin-bottom:13px}
+.sk-name{font-size:.79rem;color:var(--text);min-width:138px;font-weight:500}
+.sk-bar{flex:1;height:3px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.sk-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+.sk-pct{font-size:.74rem;color:var(--muted);min-width:34px;text-align:right}
+
+/* PORTFOLIO */
+#projects{background:transparent}
+.port-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
+
+/* Filter tabs */
+.cat-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:50px}
+.cat-tab{padding:9px 19px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:none;transition:all .22s;letter-spacing:.03em}
+.cat-tab:hover,.cat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Category section */
+.cat-section{margin-bottom:68px}
+.cat-divider{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.cat-div-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;white-space:nowrap}
+.cat-div-line{flex:1;height:1px;background:var(--border)}
+.cat-count{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.sites-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+/* Site card */
+.site-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;text-decoration:none;color:inherit;display:block;
+  opacity:0;transform:translateY(28px);
+  transition:opacity .55s,transform .55s,box-shadow .35s;
+}
+.site-card.vis{opacity:1;transform:translateY(0)}
+.site-card:hover{box-shadow:0 22px 55px rgba(59,158,255,.14);transform:translateY(-7px) scale(1.01)}
+.site-card.vis:hover{transform:translateY(-7px) scale(1.01)}
+
+.img-wrap{position:relative;overflow:hidden;aspect-ratio:16/9;background:var(--bg2)}
+/* shimmer while image loads */
+.img-wrap::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--bg2) 25%,#e8ecf4 50%,var(--bg2) 75%);background-size:200% 100%;animation:shim 1.6s infinite;transition:opacity .4s}
+.img-wrap.ld::before{opacity:0;pointer-events:none}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* actual screenshot image */
+.img-wrap img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+  display:block;transition:transform .45s cubic-bezier(.4,0,.2,1),filter .35s;
+}
+.site-card:hover .img-wrap img{transform:scale(1.04);filter:brightness(.82)}
+
+.overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,120,212,.88) 0%,rgba(59,158,255,.15) 60%,transparent 100%);opacity:0;transition:opacity .32s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px;z-index:2}
+.site-card:hover .overlay{opacity:1}
+.visit-lbl{color:#fff;font-size:.76rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.visit-lbl svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* fallback when screenshot fails */
+.fallback{
+  width:100%;height:100%;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:20px;
+  background:linear-gradient(135deg,#e8edf6,#f4f6fb);
+  position:absolute;inset:0;
+}
+.img-wrap.fb-show .fallback{display:flex}
+.img-wrap.fb-show img{display:none}
+.fb-globe{font-size:2.2rem;opacity:.3}
+.fb-domain{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--muted);text-align:center;word-break:break-all}
+.fb-hint{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);opacity:.6}
+
+.site-info{padding:16px 18px 18px}
+.site-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.site-dom{font-size:.74rem;color:var(--accent)}
+
+/* CONTACT */
+#contact{background:transparent}
+.con-inner{display:grid;grid-template-columns:1fr 1.1fr;gap:80px}
+.con-info{margin-top:42px;display:flex;flex-direction:column;gap:22px}
+.con-item{display:flex;align-items:center;gap:14px}
+.con-icon{width:42px;height:42px;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;background:var(--surface)}
+.con-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:2px;font-weight:600}
+.con-val{font-size:.9rem;color:var(--muted)}
+.con-val a{color:var(--accent);text-decoration:none}
+.con-val a:hover{text-decoration:underline}
+.con-form{display:flex;flex-direction:column;gap:16px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f-grp{display:flex;flex-direction:column;gap:6px}
+.f-lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.f-in,.f-ta,.f-sel{background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:13px 16px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.f-in:focus,.f-ta:focus,.f-sel:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,158,255,.1)}
+.f-ta{resize:vertical;min-height:116px}
+.f-btn{background:var(--accent);color:#fff;border:none;padding:14px 38px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.93rem;cursor:none;transition:background .2s,transform .2s;align-self:flex-start}
+.f-btn:hover{background:var(--accent-dark);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{background:var(--text);padding:56px 0 28px}
+.ft-inner{display:grid;grid-template-columns:1.8fr 1fr 1fr;gap:56px;margin-bottom:48px}
+.ft-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:#fff;text-decoration:none;letter-spacing:-0.03em}
+.ft-logo span{color:var(--accent2)}
+.ft-tag{color:rgba(255,255,255,.4);font-size:.84rem;margin-top:12px;line-height:1.75;max-width:240px}
+.ft-col-ttl{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);margin-bottom:18px;font-weight:600}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:11px}
+.ft-links a{color:rgba(255,255,255,.42);text-decoration:none;font-size:.84rem;transition:color .2s}
+.ft-links a:hover{color:rgba(255,255,255,.82)}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:26px;display:flex;justify-content:space-between;align-items:center}
+.ft-copy{font-size:.76rem;color:rgba(255,255,255,.3)}
+
+/* SOCIAL DOCK */
+.social-dock{
+  position:fixed;right:36px;bottom:36px;left:auto;z-index:90;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  background:#fff;border-radius:999px;padding:10px 16px;
+  box-shadow:0 12px 36px rgba(0,0,0,.12);
+  transform:none;
+  transition:opacity .35s ease,transform .35s ease,visibility .35s;
+}
+.social-dock.hide{
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(18px);
+}
+.social-dock a{
+  width:42px;height:42px;border-radius:50%;background:#111;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;transition:transform .2s,background .2s;
+}
+.social-dock a:hover{transform:translateY(-2px);background:#000}
+.social-dock svg{width:18px;height:18px;fill:#fff}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(38px);transition:opacity .85s cubic-bezier(.4,0,.2,1),transform .85s cubic-bezier(.4,0,.2,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.rev-l{opacity:0;transform:translateX(-48px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.rev-l.vis{opacity:1;transform:translateX(0)}
+.rev-r{opacity:0;transform:translateX(48px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.rev-r.vis{opacity:1;transform:translateX(0)}
+.d1{transition-delay:.1s!important}.d2{transition-delay:.2s!important}
+.d3{transition-delay:.3s!important}.d4{transition-delay:.4s!important}
+
+/* Hero entrance */
+.hero-label,.hero-title,.hero-sub,.hero-actions,.hero-stats{opacity:0;animation:hIn .9s cubic-bezier(.4,0,.2,1) forwards}
+.hero-label{animation-delay:.25s}.hero-title{animation-delay:.45s}
+.hero-sub{animation-delay:.62s}.hero-actions{animation-delay:.78s}.hero-stats{animation-delay:.92s}
+@keyframes hIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* Responsive */
+@media(max-width:960px){
+  nav,nav.sc{padding:16px 24px}
+  .nav-links{display:none}
+  #hero{padding:0 24px 60px}
+  .hero-stats,.hero-scroll-wrap{display:none}
+  .wrap{padding:0 24px}
+  .sp{padding:80px 0}
+  .svc-grid,.about-inner,.course-inner{grid-template-columns:1fr}
+  .about-vis{max-height:300px}
+  .sites-grid{grid-template-columns:repeat(2,1fr)}
+  .con-inner{grid-template-columns:1fr}
+  .f-row{grid-template-columns:1fr}
+  .ft-inner{grid-template-columns:1fr 1fr;gap:36px}
+}
+@media(max-width:600px){.sites-grid{grid-template-columns:1fr}}
+
+/* Photo card styles */
+.photo-card{padding:0;overflow:hidden;position:relative}
+.about-photo{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.photo-card:hover .about-photo{transform:scale(1.04)}
+.photo-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:28px 24px;
+  background:linear-gradient(to top,rgba(26,28,34,.75) 0%,transparent 100%);
+  display:flex;align-items:flex-end;
+}
+.photo-overlay .about-pill{
+  border-color:rgba(255,255,255,.35);
+  color:#fff;background:rgba(59,158,255,.25);
+  backdrop-filter:blur(8px);
+}
+
+/* COURSES */
+#courses{background:transparent}
+.course-inner{display:grid;grid-template-columns:1fr 1.15fr;gap:72px;align-items:center}
+.course-name{font-family:'Syne',sans-serif;font-size:1.18rem;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:.04em;text-transform:uppercase}
+.course-dates{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:16px}
+.course-desc{color:var(--muted);font-size:.97rem;line-height:1.8;max-width:520px}
+.cert-wrap{border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(42,6,56,.28);transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.cert-wrap:hover{transform:translateY(-6px)}
+.cert-img{width:100%;height:auto;display:block}
+
+</style>
+</head>
+<body>
+
+<div id="cur"><div id="cur-h"></div><div id="cur-r"></div></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="logo">Marko Kujacic<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#projects">Portfolio</a></li>
+    <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-label">Full Stack Developer · Available worldwide</div>
+  <h1 class="hero-title">Building<br>End-to-End<br><em>Products</em></h1>
+  <p class="hero-sub">Marko Kujacic — Full Stack Developer shipping production apps across web, mobile, APIs, cloud, and AI. Clean architecture, fast delivery, systems that scale.</p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn-p">View My Work →</a>
+    <a href="#contact" class="btn-o">Get In Touch</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">70<span>+</span></div><div class="stat-lbl">Apps &amp; Platforms</div></div>
+    <div class="stat"><div class="stat-num">12<span>+</span></div><div class="stat-lbl">Years Experience</div></div>
+    <div class="stat"><div class="stat-num">20<span>+</span></div><div class="stat-lbl">Tech Stack Depth</div></div>
+  </div>
+  <div class="hero-scroll-wrap"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <div class="tk-item"><span class="tk-dot"></span>React &amp; Next.js</div>
+    <div class="tk-item"><span class="tk-dot"></span>Node.js &amp; Express</div>
+    <div class="tk-item"><span class="tk-dot"></span>TypeScript</div>
+    <div class="tk-item"><span class="tk-dot"></span>React Native &amp; Flutter</div>
+    <div class="tk-item"><span class="tk-dot"></span>Python &amp; Django</div>
+    <div class="tk-item"><span class="tk-dot"></span>PostgreSQL</div>
+    <div class="tk-item"><span class="tk-dot"></span>AI Integration</div>
+    <div class="tk-item"><span class="tk-dot"></span>Model Training</div>
+    <div class="tk-item"><span class="tk-dot"></span>AWS &amp; Docker</div>
+    <div class="tk-item"><span class="tk-dot"></span>React &amp; Next.js</div>
+    <div class="tk-item"><span class="tk-dot"></span>Node.js &amp; Express</div>
+    <div class="tk-item"><span class="tk-dot"></span>TypeScript</div>
+    <div class="tk-item"><span class="tk-dot"></span>React Native &amp; Flutter</div>
+    <div class="tk-item"><span class="tk-dot"></span>Python &amp; Django</div>
+    <div class="tk-item"><span class="tk-dot"></span>PostgreSQL</div>
+    <div class="tk-item"><span class="tk-dot"></span>AI Integration</div>
+    <div class="tk-item"><span class="tk-dot"></span>Model Training</div>
+    <div class="tk-item"><span class="tk-dot"></span>AWS &amp; Docker</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="sp">
+  <div class="wrap">
+    <div class="svc-hdr">
+      <div class="reveal"><div class="sec-label">What I Do</div><h2 class="sec-title">Full Stack<br>Expertise</h2></div>
+      <p class="sec-sub reveal d2">From web and mobile apps to APIs, data, cloud, and AI — I own the full product stack end to end.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card reveal d1"><div class="svc-n">01</div><div class="svc-icon">💻</div><div class="svc-name">Frontend Engineering</div><p class="svc-desc">Responsive, accessible interfaces with modern frameworks. Component systems, state management, and UX that feels fast and intentional.</p><div class="svc-tags"><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Tailwind</span></div></div>
+      <div class="svc-card reveal d2"><div class="svc-n">02</div><div class="svc-icon">⚙️</div><div class="svc-name">Backend &amp; APIs</div><p class="svc-desc">Secure, scalable APIs and business logic — authentication, payments, webhooks, background jobs, and clean service boundaries.</p><div class="svc-tags"><span class="tag">Node.js</span><span class="tag">Python</span><span class="tag">REST</span><span class="tag">GraphQL</span></div></div>
+      <div class="svc-card reveal d3"><div class="svc-n">03</div><div class="svc-icon">🗄️</div><div class="svc-name">Data &amp; Architecture</div><p class="svc-desc">Schema design, query performance, caching, and migrations that keep products reliable as traffic and features grow.</p><div class="svc-tags"><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span><span class="tag">Redis</span><span class="tag">Prisma</span></div></div>
+      <div class="svc-card reveal d4"><div class="svc-n">04</div><div class="svc-icon">☁️</div><div class="svc-name">Cloud &amp; DevOps</div><p class="svc-desc">Deployments, containers, CI/CD, and monitoring so releases are repeatable and production stays healthy.</p><div class="svc-tags"><span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">CI/CD</span><span class="tag">Microsoft Azure</span></div></div>
+      <div class="svc-card reveal d1"><div class="svc-n">05</div><div class="svc-icon">📱</div><div class="svc-name">Mobile Development</div><p class="svc-desc">Native-feel iOS and Android apps with shared codebases — offline support, push notifications, and APIs that keep web and mobile in sync.</p><div class="svc-tags"><span class="tag">React Native</span><span class="tag">Flutter</span><span class="tag">Expo</span><span class="tag">iOS / Android</span></div></div>
+      <div class="svc-card reveal d2"><div class="svc-n">06</div><div class="svc-icon">🤖</div><div class="svc-name">AI Integration &amp; Training</div><p class="svc-desc">LLM features, custom model training pipelines, RAG systems, and AI APIs wired into real products — chat, search, automation, and insights.</p><div class="svc-tags"><span class="tag">OpenAI</span><span class="tag">LangChain</span><span class="tag">Fine-tuning</span><span class="tag">RAG</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="sp">
+  <div class="wrap">
+    <div class="about-inner">
+      <div class="about-vis rev-l">
+        <div class="about-card photo-card">
+          <img src="marko.png" alt="Marko Kujacic — Full Stack Developer" class="about-photo">
+        </div>
+        <div class="about-badge">
+          <div class="about-badge-n">12+</div>
+          <div class="about-badge-l">Years<br>Building</div>
+        </div>
+      </div>
+      <div class="about-txt rev-r">
+        <div class="sec-label">About Me</div>
+        <h2 class="sec-title">Code that ships<br>and scales</h2>
+        <p>I'm Marko Kujacic, a full stack developer focused on turning product ideas into reliable web, mobile, and AI-powered applications. I work across the stack — React and Next.js on the client, React Native on mobile, Node and Python on the server, and cloud infrastructure that holds it together.</p>
+        <p>Whether it's a SaaS dashboard, a mobile product, an AI-assisted workflow, or a custom internal tool, I design for clarity, performance, and long-term maintainability — not just a launch date.</p>
+        <div class="about-skills">
+          <div class="sk-row"><span class="sk-name">React / Next.js</span><div class="sk-bar"><div class="sk-fill" data-w="100"></div></div><span class="sk-pct">100%</span></div>
+          <div class="sk-row"><span class="sk-name">Node.js / APIs</span><div class="sk-bar"><div class="sk-fill" data-w="94"></div></div><span class="sk-pct">94%</span></div>
+          <div class="sk-row"><span class="sk-name">Mobile (RN / Flutter)</span><div class="sk-bar"><div class="sk-fill" data-w="90"></div></div><span class="sk-pct">90%</span></div>
+          <div class="sk-row"><span class="sk-name">AI Integration / Training</span><div class="sk-bar"><div class="sk-fill" data-w="88"></div></div><span class="sk-pct">88%</span></div>
+          <div class="sk-row"><span class="sk-name">AWS / DevOps</span><div class="sk-bar"><div class="sk-fill" data-w="95"></div></div><span class="sk-pct">95%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="projects" class="sp">
+  <div class="wrap">
+    <div class="port-hdr">
+      <div class="reveal"><div class="sec-label">Portfolio</div><h2 class="sec-title">Products Across<br>the Stack</h2></div>
+      <p class="sec-sub reveal d2">Selected full stack builds — filtered by the same expertise areas above.</p>
+    </div>
+    <div class="cat-tabs reveal" id="tabRow"></div>
+    <div id="portBody"></div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="sp">
+  <div class="wrap">
+    <div class="course-inner">
+      <div class="rev-l">
+        <div class="sec-label">Courses</div>
+        <h2 class="sec-title">Tech Educators,<br>Norwich</h2>
+        <div class="course-name">Full Stack MERN Bootcamp Course</div>
+        <div class="course-dates">January – March 2024</div>
+        <p class="course-desc">12 week intensive bootcamp. Through collaborative projects and guidance from industry professionals, I've honed my skills and built a strong foundation for tackling real-world coding challenges with confidence.</p>
+      </div>
+      <div class="cert-wrap rev-r">
+        <img src="certificate.png" alt="Tech Educators Full Stack Coding Bootcamp certificate — Marko Kujacic" class="cert-img">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="sp">
+  <div class="wrap">
+    <div class="con-inner">
+      <div class="rev-l">
+        <div class="sec-label">Let's Work Together</div>
+        <h2 class="sec-title">Start Your<br>Next Build</h2>
+        <p class="sec-sub" style="margin-top:12px">Need a full stack app, API, or platform rebuild? Tell me what you're building and I'll help you ship it the right way.</p>
+        <div class="con-info">
+          <div class="con-item"><div class="con-icon">📧</div><div><div class="con-lbl">Email</div><div class="con-val"><a href="mailto:markodev007@gmail.com">markodev007@gmail.com</a></div></div></div>
+          <div class="con-item"><div class="con-icon">🌍</div><div><div class="con-lbl">Location</div><div class="con-val">Available Worldwide · Remote</div></div></div>
+          <div class="con-item"><div class="con-icon">⚡</div><div><div class="con-lbl">Response Time</div><div class="con-val">Within 24 hours</div></div></div>
+        </div>
+      </div>
+      <div class="rev-r">
+        <div class="con-form">
+          <div class="f-row">
+            <div class="f-grp"><label class="f-lbl">Your Name</label><input type="text" class="f-in" placeholder="John Smith"></div>
+            <div class="f-grp"><label class="f-lbl">Your Email</label><input type="email" class="f-in" placeholder="john@company.com"></div>
+          </div>
+          <div class="f-grp"><label class="f-lbl">Service Needed</label><select class="f-sel"><option value="" disabled selected>Select a service</option><option>Full Stack Application</option><option>Frontend Development</option><option>Backend / API Development</option><option>Mobile App Development</option><option>AI Integration / AI Training</option><option>Database &amp; Architecture</option><option>Cloud / DevOps</option><option>SaaS / Dashboard</option><option>Other</option></select></div>
+          <div class="f-grp"><label class="f-lbl">Budget Range</label><select class="f-sel"><option value="" disabled selected>Select budget</option><option>Under $2,000</option><option>$2,000 – $5,000</option><option>$5,000 – $15,000</option><option>$15,000+</option></select></div>
+          <div class="f-grp"><label class="f-lbl">About Your Project</label><textarea class="f-ta" placeholder="Describe your product, stack preferences, and timeline..."></textarea></div>
+          <button class="f-btn" id="sendBtn">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="ft-inner">
+      <div><a href="#hero" class="ft-logo">Marko<span>.</span></a><p class="ft-tag">Full stack developer building reliable apps from interface to infrastructure.</p></div>
+      <div><div class="ft-col-ttl">Navigation</div><ul class="ft-links"><li><a href="#services">Services</a></li><li><a href="#about">About</a></li><li><a href="#courses">Courses</a></li><li><a href="#projects">Portfolio</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div><div class="ft-col-ttl">Contact</div><ul class="ft-links"><li><a href="mailto:markodev007@gmail.com">markodev007@gmail.com</a></li><li><a href="#contact">Start a Project</a></li></ul></div>
+    </div>
+    <div class="ft-bottom"><span class="ft-copy">© 2026 Marko Kujacic. All Rights Reserved.</span><span class="ft-copy">Marko Kujacic · Full Stack Developer</span></div>
+  </div>
+</footer>
+
+<div class="social-dock" id="socialDock" aria-label="Social links">
+  <a href="https://github.com/fisherod" target="_blank" rel="noopener" aria-label="GitHub">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.71.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.27 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.7.12 2.5.35 1.9-1.32 2.74-1.05 2.74-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.38-.01 2.49-.01 2.83 0 .26.18.58.69.48A10.04 10.04 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"/></svg>
+  </a>
+  <a href="https://www.linkedin.com/in/marko-kujacic-845725168/" target="_blank" rel="noopener" aria-label="LinkedIn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.73V1.73C24 .77 23.21 0 22.23 0z"/></svg>
+  </a>
+  <a href="mailto:markodev007@gmail.com" aria-label="Email">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
+</div>
+
+<script>
+// ── PORTFOLIO DATA ──
+const CATS = [
+  { id:'frontend', label:'Frontend Engineering', sites:[
+    {n:'Nomad Barber',u:'https://www.nomadbarber.com/'},
+    {n:'Porters Barbers',u:'https://portersbarbers.co.uk/'},
+    {n:'Bone Fade Barbers',u:'https://www.bonefadebarbers.com/'},
+    {n:"Al's Barbershop",u:'https://www.als-barbershop.net/'},
+    {n:'Rocket Barbershop',u:'https://rocketbarbershop.co.uk/'},
+    {n:'Buzzworthy Studio',u:'https://buzzworthystudio.com/'},
+    {n:'The Little Architecture Co.',u:'https://thelittlearchitecturecompany.co.uk/'},
+    {n:'Andon WWW',u:'https://andonwww.com/'},
+    {n:'Eskew+Dumez+Ripple',u:'https://www.eskewdumezripple.com/'},
+    {n:'Pelizzari Studio',u:'https://www.pelizzari.com/en/'},
+    {n:'Fireart Studio',u:'https://fireart.studio/'},
+  ]},
+  { id:'backend', label:'Backend & APIs', sites:[
+    {n:'Ashcroft Law Firm',u:'https://ashcroftlawfirm.com/'},
+    {n:'Summerlin Law SC',u:'https://summerlinlawsc.com/'},
+    {n:'Garcia Garcia Law',u:'https://garciagarcialaw.com/'},
+    {n:'Brownson PLLC',u:'https://www.brownsonpllc.com/'},
+    {n:'Lifecare Australia',u:'https://www.lifecare.com.au/'},
+    {n:'Pivotal Health Care',u:'https://pivotalhealth.care/'},
+    {n:'Dr. Saberinia',u:'https://www.drsaberinia.com/'},
+    {n:'MedWest Plus',u:'https://medwest.plus/'},
+    {n:'Lucky Folks',u:'https://www.luckyfolks.fr/'},
+    {n:'Flaner Moscow',u:'https://flanermoscow.ru/'},
+    {n:'Le Bernardin',u:'https://www.le-bernardin.com/'},
+  ]},
+  { id:'data', label:'Data & Architecture', sites:[
+    {n:'Nortvi',u:'https://nortvi.com/'},
+    {n:'Somnox',u:'https://somnox.com/'},
+    {n:'By Lindhardt',u:'https://bylindhardt.com/'},
+    {n:'Fresh Beauty',u:'https://www.fresh.com/us/home'},
+    {n:'Helm Boots',u:'https://helmboots.com/'},
+    {n:'Wayfair',u:'https://www.wayfair.com/'},
+    {n:'Developwise',u:'https://www.developwise.com.au/'},
+    {n:'Corcoran',u:'https://www.corcoran.com/'},
+    {n:'Foster Realty',u:'https://fosterrealty.com/'},
+  ]},
+  { id:'cloud', label:'Cloud & DevOps', sites:[
+    {n:'Ultima Corfu',u:'https://www.ultimacorfu.com/'},
+    {n:'Aguas de Ibiza',u:'https://www.aguasdeibiza.com/'},
+    {n:'Epic Hotel',u:'https://www.epichotel.com/'},
+    {n:'DP Immofinanz',u:'https://dp-immofinanz.de/'},
+    {n:'Risewell Homes',u:'https://risewellhomes.com/'},
+    {n:'Avocado Homes',u:'https://www.avocado-homes.com/'},
+    {n:'Sweenor Builders',u:'https://sweenorbuilders.com/'},
+    {n:'Edwards Plumbing',u:'https://edwardsplumbingllc.com/'},
+    {n:'Mr. Rooter',u:'https://www.mrrooter.com/'},
+  ]},
+  { id:'mobile', label:'Mobile Development', sites:[
+    {n:'Beauty Room',u:'https://beautyroom.ca/'},
+    {n:'Maria Charles',u:'https://www.mariacharles.co.uk/'},
+    {n:'SE Beauty Studio',u:'https://se-beautystudio.de/'},
+    {n:'Vitality Float Spa',u:'https://www.vitalityfloatspa.com/'},
+    {n:'Flourish Chiropractic Spa',u:'https://www.flourishchiropracticspa.com/'},
+    {n:'The Akt',u:'https://www.theakt.com/'},
+    {n:'Planet Fitness',u:'https://www.planetfitness.com/'},
+    {n:'Jim Karas',u:'https://www.jimkaras.com/'},
+    {n:'My Plumber UK',u:'https://my-plumber.co.uk/'},
+  ]},
+  { id:'ai', label:'AI Integration & Training', sites:[
+    {n:'Handshake AI',u:'https://joinhandshake.com/ai'},
+    {n:'Revelo',u:'https://www.revelo.com/ai'},
+    {n:'DataAnnotation',u:'https://www.dataannotation.tech/'},
+    {n:'Outlier',u:'https://outlier.ai/'},
+  ]},
+];
+
+function dom(url){ try{ return new URL(url).hostname.replace('www.',''); }catch(e){ return url; } }
+
+// Try screenshot sources in sequence until one loads
+function tryNext(img){
+  var srcs = img._srcs;
+  var i = (img._idx || 0) + 1;
+  img._idx = i;
+  if(i < srcs.length){
+    img.src = srcs[i];
+  } else {
+    img.closest('.img-wrap').classList.add('ld','fb-show');
+  }
+}
+
+function makeCard(site, catId, idx){
+  var d = dom(site.u);
+  var e = encodeURIComponent(site.u);
+  // sources tried in order — first to succeed wins
+  var s0 = 'https://s.wordpress.com/mshots/v1/' + e + '?w=1200&h=800';
+  var s1 = 'https://api.microlink.io/?url=' + e + '&screenshot=true&meta=false&embed=screenshot.url';
+  var s2 = 'https://image.thum.io/get/width/1280/crop/800/' + e + '?viewportWidth=1280';
+  var s3 = 'https://shot.screenshotapi.net/screenshot?url=' + e + '&width=1280&height=800&output=image&file_type=jpg&wait_for_event=load';
+  var srcsJson = JSON.stringify([s0, s1, s2, s3]);
+
+  return '<a class="site-card" href="' + site.u + '" target="_blank" rel="noopener" data-cat="' + catId + '" style="transition-delay:' + (idx*0.06) + 's">'
+    + '<div class="img-wrap">'
+    + '<img data-srcs=\'' + srcsJson + '\' data-idx="0" alt="Preview of ' + site.n + '" loading="lazy" />'
+    + '<div class="fallback"><div class="fb-globe">&#127760;</div><div class="fb-domain">' + d + '</div><div class="fb-hint">Click to visit &rarr;</div></div>'
+    + '<div class="overlay"><span class="visit-lbl">Visit Site &#x2197;</span></div>'
+    + '</div>'
+    + '<div class="site-info"><div class="site-name">' + site.n + '</div><span class="site-dom">' + d + '</span></div>'
+    + '</a>';
+}
+
+function makeSection(cat){
+  return `<div class="cat-section" data-cat="${cat.id}">
+    <div class="cat-divider">
+      <div class="cat-div-label">${cat.label}</div>
+      <div class="cat-div-line"></div>
+      <div class="cat-count">${cat.sites.length} projects</div>
+    </div>
+    <div class="sites-grid">${cat.sites.map((s,i)=>makeCard(s,cat.id,i)).join('')}</div>
+  </div>`;
+}
+
+// Build tabs + body
+const tabRow = document.getElementById('tabRow');
+const portBody = document.getElementById('portBody');
+
+tabRow.innerHTML = `<button class="cat-tab active" data-filter="all">All</button>`
+  + CATS.map(c=>`<button class="cat-tab" data-filter="${c.id}">${c.label}</button>`).join('');
+portBody.innerHTML = CATS.map(makeSection).join('');
+initImages();
+
+// Init screenshots: assign src from data-srcs, wire up fallback chain
+function initImages(){
+  document.querySelectorAll('img[data-srcs]').forEach(function(img){
+    var srcs = JSON.parse(img.dataset.srcs);
+    img._srcs = srcs;
+    img._idx = 0;
+    img.onload = function(){ this.closest('.img-wrap').classList.add('ld'); };
+    img.onerror = function(){ tryNext(this); };
+    img.src = srcs[0];
+  });
+}
+
+// Filter
+tabRow.querySelectorAll('.cat-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    tabRow.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const f = tab.dataset.filter;
+    document.querySelectorAll('.cat-section').forEach(sec=>{
+      sec.style.display = (f==='all'||sec.dataset.cat===f)?'':'none';
+    });
+    observeCards();
+  });
+});
+
+// ── CURSOR ──
+const curH=document.getElementById('cur-h'),curR=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function frame(){
+  curH.style.cssText+=`;left:${mx}px;top:${my}px`;
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  curR.style.cssText+=`;left:${rx}px;top:${ry}px`;
+  requestAnimationFrame(frame);
+})();
+document.querySelectorAll('a,button,.svc-card,.cat-tab,.cert-wrap,.social-dock a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+// ── NAV SCROLL ──
+const navEl=document.getElementById('nav');
+window.addEventListener('scroll',()=>navEl.classList.toggle('sc',scrollY>60),{passive:true});
+
+const socialDock=document.getElementById('socialDock');
+const footerEl=document.querySelector('footer');
+new IntersectionObserver(entries=>{
+  socialDock.classList.toggle('hide', entries[0].isIntersecting);
+},{threshold:.08}).observe(footerEl);
+
+// ── INTERSECTION OBSERVER ──
+function makeIO(threshold=.12){
+  return new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('vis');
+        e.target.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.w+'%');
+        e.target.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.w+'%');
+      }
+    });
+  },{threshold});
+}
+const io1=makeIO(.12);
+const io2=makeIO(.1);
+
+function observeAll(){
+  document.querySelectorAll('.reveal,.rev-l,.rev-r').forEach(el=>io1.observe(el));
+}
+function observeCards(){
+  document.querySelectorAll('.site-card:not(.vis)').forEach(el=>io2.observe(el));
+}
+observeAll();
+observeCards();
+
+// Skill bars
+document.querySelectorAll('.about-txt').forEach(el=>{
+  new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.w+'%');
+    });
+  },{threshold:.28}).observe(el);
+});
+
+// ── FORM ──
+document.getElementById('sendBtn').addEventListener('click',function(){
+  this.textContent='Message Sent ✓';this.style.background='#22c55e';
+  setTimeout(()=>{this.textContent='Send Message →';this.style.background=''},3000);
+});
+
+// ── SMOOTH ANCHORS ──
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>
